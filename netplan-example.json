@@ -1,12 +1,44 @@
 {
     "switches": {
-        "Arista": {
-            "ports": ["0-5", "6", "9-12"]
+        "Arista-1": {
+            "protocol": "Arista-EOS",
+            "macaddr": "00:01:02:03:04:05",
+            "profiles": {
+            	"default":"0-14",
+				"gateway":"13-14",
+				"management-gateway":"15"
+            }
         },
-        "Cisco": {
-            "ports": ["2", "3", "3-4"]
+        "Cisco-1": {
+            "protocol": "Cisco-NXOS",
+            "macaddr": "10:01:02:03:04:05",
+            "profiles": {
+            	"default":"1/0-14",
+				"gateway":"1/13-14",
+				"management-gateway":"1/15"
+            }
         }
     },
-    "global": {
+    "profiles":{
+    	"default":["replicast"],
+    	"gateway":["replicast","client"],
+    	"management-gateway":["replicast","client","mananagent"]
+    },
+    "vlans":{
+    	"replicast":{
+    		"vlan":5,
+    		"cos":4,
+    		"weight":50
+    	},
+    	"client":{
+    		"vlan":1,
+    		"cos":5,
+    		"weight":40
+    	},    	
+    	"management":{
+    		"vlan":2,
+    		"cos":6,
+    		"weight":10
+    	}  	
     }
 }
