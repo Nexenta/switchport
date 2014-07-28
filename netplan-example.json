@@ -1,5 +1,6 @@
 {
 	"single-vlan-mode":"trunk",
+	
     "switches": {
         "Arista-1": {
             "protocol": "Arista-EOS",
@@ -20,6 +21,7 @@
             }
         }
     },
+    
     "protocols":{
     	"Arista-EOS":{
     		"lldp-map":[
@@ -30,12 +32,15 @@
     		"lldp-map":[
     			["1/*","PortDescr: Ethernet*"]
     		]
+    	}
     },
+    
     "profiles":{
     	"replicst-only":["replicast"],
     	"gateway":["replicast","client"],
     	"management-gateway":["replicast","client","mananagent"]
     },
+    
     "vlans":{
     	"replicast":{
     		"vlan":5,
@@ -54,5 +59,3 @@
     	}	
     }
 }
-
-

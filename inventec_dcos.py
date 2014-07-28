@@ -1,15 +1,12 @@
 #!/usr/bin/bash
 #
-# neetplan module for Aristas-EOS protocol
+# neetplan module for Inventec-DCOS protocol
 
-class arista_eos:
+class inventec_dcos:
 	#
-	# Arista-EOS requires no configuration lines independent of interface configuration
 	#
 	def fixed_lines (self,sw_proto,np):
-		lines = []
-		lines.append("sw_proto "+str(sw_proto))
-		return lines
+		return []
 		
 	#
 	# return lines for the specified sp_name and profile_name
@@ -31,4 +28,3 @@ class arista_eos:
 		applied_lines.append(lines)
 		
 		return applied_lines
-

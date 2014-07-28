@@ -13,6 +13,21 @@
 import sys,json
 from array import *
 
+from arista_eos import arista_eos
+from cisco_nxos import cisco_nxos
+from inventec_dcos import inventec_dcos
+from unknown_switch import unknown_switch
+
+def sw_protocol (p):
+	if p == "Arista-EOS":
+		return arista_eos()
+	if p == "Ciscso-NXOS":
+		return cisco_nxos()
+	if p == 'Inventec-DCOS':
+		return inventec_dcos()
+	return unknown_switch()
+	
+	
 np = dict()
 
 
@@ -36,7 +51,7 @@ def np_switchports (switch,profile):
 	
 def np_profile_vlans (profile):
 	return np['profiles'].get(profile)
-	
+
 def np_vlans ():
 	return np['vlans'].keys()
 	
@@ -49,20 +64,7 @@ def np_vlan_cos (vlan):
 def np_vlan_weight (vlan):
 	return np['vlans'].get(vlan)['weight']		
 
-import arista_eos
-import cisco_nxos
-import inventec_dcos
-import unknown_switch
 
-def switch_protocol (p):
-	print "switch_protocol",p
-	if p == "Arista-EOS":
-		return arista_eos()
-	if p == "Ciscso-NXOS":
-		return cisco_nxos()
-	if p == 'Inventec-DCOS':
-		return inventec_dcos()
-	return unknown_switch()
 
 
 #
@@ -77,24 +79,27 @@ def switch_protocol (p):
 #										interface name and identifying lldp attribute
 # 
 def process_switch (np,switch_name,fixed_lines,profile_lines):
+	print "process_switch",switch_name,"fixed",fixed_lines,"profile",profile_lines
 	cmd_file = open (switch_name+".cmd",'w')
-	s = np['switches'].get(switch)
-	print "s",s
-	switchports_file = open (switch_name,".lldp")
-	switchports_file.write(s['macaddr']
+	s = np['switches'].get(switch_name)
+	switchports_file = open (switch_name+".lldp",'w')
+	err = switchports_file.write(s['macaddr'])
+	if err != 0:
+		print "switchports file write err",err
+		exit(2)
 	p = s['protocol']
 	print "protocol",p
 	spc = switch_protocol(s['protocol'])
 	for line in fixed_lines:
 		cmd_file.write(line)
-	profiles = np_profiles(switch_name)
-	for profile-name in profiles.keys():
-		lines = spc.apply_to_interface_list(profiles[profile_name],profile_lines[profile-name])
+	profiles = np_profile(switch_name)
+	for pname in profiles.keys():
+		lines = spc.apply_to_interface_list(profiles[pname],profile_lines[pname])
 		for line in lines:
 			cmd_file.write(line)
 #			write to switchport_file
 
-	switchport_file.close()
+	switchports_file.close()
 	cmd_file.close()
 	return 0
 
@@ -108,21 +113,27 @@ netplan_js = open(sys.argv[1],'r').read()
 np = json.loads(netplan_js)
 switches = np_switches()
 
+fixed_lines=dict()
+profile_lines=dict()
 
 for sp_name in np['protocols'].keys():
-	spc = swith_protocol()
-	fixed_lines[sp-name] = spc.fixed_lines(spc,np)
-	for profile-name in np['profiles'].keys():
-		profile_lines[sp_name][profile_name] = spc.profile_lines(np,sp_name,profile-name)
-		f = open (sp_name+"."+profile_name+".cmd","w")
-		for line in profile_lines[sp_name][profile_name]:
+	profile_lines[sp_name] = dict()
+	spc = sw_protocol(sp_name)
+	fixed_lines[sp_name] = spc.fixed_lines(spc,np)
+	for pname in np['profiles'].keys():
+		lines = spc.profile_lines(np,sp_name,pname)
+		profile_lines.get(sp_name)[pname] = lines
+		f = open (sp_name+"."+pname+".cmd","w")
+		for line in profile_lines.get(sp_name)[pname]:
 			f.write(line)
 		f.close()		
 
 
 for s in switches:
-	sp_name = s['protocol']
-	process_switch(np,s,fixed_lines[sp_name],profile_lines[sp_name])
+	sp_name = np_protocol(s)
+	f = fixed_lines.get(sp_name)
+	p = profile_lines.get(sp_name)
+	process_switch(np,s,f,p)
 	
 exit(0)
 

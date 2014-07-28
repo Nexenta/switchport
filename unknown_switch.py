@@ -1,14 +1,13 @@
 #!/usr/bin/bash
 #
-# neetplan module for Aristas-EOS protocol
+# Dummy netplan module that is catchall for unknown switches
 
-class arista_eos:
+class unknown_switch:
 	#
-	# Arista-EOS requires no configuration lines independent of interface configuration
 	#
 	def fixed_lines (self,sw_proto,np):
 		lines = []
-		lines.append("sw_proto "+str(sw_proto))
+		lines.append('Switch protocol not supported')
 		return lines
 		
 	#
@@ -31,4 +30,3 @@ class arista_eos:
 		applied_lines.append(lines)
 		
 		return applied_lines
-

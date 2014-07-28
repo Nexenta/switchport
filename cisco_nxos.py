@@ -1,15 +1,14 @@
 #!/usr/bin/bash
 #
-# neetplan module for Aristas-EOS protocol
+# neetplan module for Cisco-NXOS protocol
 
-class arista_eos:
+class cisco_nxos:
 	#
-	# Arista-EOS requires no configuration lines independent of interface configuration
+	# Cisco NXOS requires queues be created globally
+	# MTU is assigned to queues
 	#
 	def fixed_lines (self,sw_proto,np):
-		lines = []
-		lines.append("sw_proto "+str(sw_proto))
-		return lines
+		return []
 		
 	#
 	# return lines for the specified sp_name and profile_name
@@ -31,4 +30,3 @@ class arista_eos:
 		applied_lines.append(lines)
 		
 		return applied_lines
-
