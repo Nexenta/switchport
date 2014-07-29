@@ -90,6 +90,7 @@ try:
 except:
 	pass
 
+
 for sp_name in np['protocols'].keys():
 	spc = sw_protocol(sp_name)
 	for pname in np['profiles'].keys():
@@ -98,6 +99,7 @@ for sp_name in np['protocols'].keys():
 		for line in lines:
 			f.write(line+"\n")
 		f.close()		
+
 
 
 switchports_file = open ("out/lldp",'w')
