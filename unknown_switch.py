@@ -26,7 +26,10 @@ class unknown_switch:
 	# apply interface list to lines[]
 	#
 	def apply_to_interface_list (self,interface_list,lines):
-		applied_lines = "interface ethernet "+str(interface_list)
-		applied_lines.append(lines)
+		applied_lines = []
+		for interface in interface_list:
+			applied_lines.append("interface ethernet "+interface)
+			for line in lines:			
+				applied_lines.append(line)
 		
 		return applied_lines
