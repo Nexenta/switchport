@@ -15,16 +15,16 @@ from array import *
 
 from arista_eos import arista_eos
 from cisco_nxos import cisco_nxos
-from inventec_dcos import inventec_dcos
+from inventec_ios import inventec_ios
 from unknown_switch import unknown_switch
 
 def sw_protocol (p):
 	if p == "Arista-EOS":
 		return arista_eos()
-	if p == "Ciscso-NXOS":
+	if p == "Cisco-NXOS":
 		return cisco_nxos()
-	if p == 'Inventec-DCOS':
-		return inventec_dcos()
+	if p == 'Inventec-IOS':
+		return inventec_ios()
 	return unknown_switch()
 	
 	
