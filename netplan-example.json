@@ -1,5 +1,5 @@
 {
-	"single-vlan-mode":"access",
+	"single-vlan-mode":"trunk",
 	
     "switches": {
         "Arista-1": {
@@ -19,6 +19,13 @@
 				"gateway":"1/13,1/14",
 				"management_gateway":"1/15"
             }
+        },
+        "Inventec-1":{
+        	"protocol":"Inventec-ICOS",
+        	"macaddr": "20:01:02:03:04:05",
+        	"profiles":{
+        		"replicast_only":"0/1,0/2,0/3,04"
+        	}
         }
     },
     
@@ -31,6 +38,11 @@
     	"Cisco-NXOS":{
     		"lldp-map":[
     			["1/[0-9]*","PortDescr: Ethernet*"]
+    		]
+    	},
+    	"Inventec-ICOS":{
+    		"lldp-map":[
+    			["0/[0-9]*","TBD *"]
     		]
     	}
     },
