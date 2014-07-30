@@ -21,6 +21,7 @@ class arista_eos:
 		n_vlans = len(profile)
 		
 		total_weight = 0
+		no_drop_cos = 4
 		vname = []
 		id = []
 		cos = []
@@ -33,25 +34,36 @@ class arista_eos:
 			w = v['weight']
 			total_weight = total_weight + w
 			weight.append(str(w))
+			if v['no-drop'] == 'true':
+				no_drop_cos = cos[0]
 	
-		if n_vlans == 1:
-			if np['single-vlan-mode'] == 'access':
-
-				lines.append('switchport mode access')
-				lines.append('switchport access vlan '+id[0])
-			else:
-				lines.append('switchport mode trunk')
-				lines.append('switchport trunk allowed vlan '+id[0])
-			# set up PFC
-			# set up spanning tree edge
-		else:
+		if n_vlans > 1:
 			lines.append('switchport mode trunk')
 			lines.append('switchport trunk allowed vlan '+','.join(id))
-			# set up queues
-			# get bandwidth %
-			# set of PFC/no-drop for replicast
-			# set up spanning tree edge
+		elif np['single-vlan-mode'] == 'access':
+			lines.append('switchport mode access')
+			lines.append('switchport access vlan '+id[0])
+		else:
+			lines.append('switchport mode trunk')
+			lines.append('switchport trunk allowed vlan '+id[0])
+
+		remaining_weight = 100
+		for i in range(len(cos)):
+			lines.append('tx queue '+cos[i])
+			if i==0:
+				lines.append('no priority')
+			if i < len(cos)-1:
+				percent = int(weight[i])*100/total_weight
+				remaining_weight = remaining_weight - percent
+			else:
+				percent = remaining_weight
 			
+			lines.append('bandwidth percent '+str(percent))
+								
+		lines.append('priority-flow-control mode on')
+		lines.append('priority-flow-control priority '+no_drop_cos+' no-drop')
+		# set up spanning tree edge	
+				
 		return lines
 		
 	#
