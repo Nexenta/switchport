@@ -36,7 +36,8 @@ class arista_eos:
 			weight.append(str(w))
 			if v['no-drop'] == 'true':
 				no_drop_cos = cos[0]
-	
+
+		lines.append('mtu 9000')	
 		if n_vlans > 1:
 			lines.append('switchport mode trunk')
 			lines.append('switchport trunk allowed vlan '+','.join(id))
