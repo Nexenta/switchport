@@ -89,6 +89,11 @@ try:
 	os.mkdir("out")
 except:
 	pass
+	
+try:
+	os.remote("out/*")
+except:
+	pass
 
 
 for sp_name in np['protocols'].keys():
@@ -97,7 +102,11 @@ for sp_name in np['protocols'].keys():
 		f = open ("out/"+sp_name+"."+pname+".cmd","w")
 		lines = spc.profile_lines(np,pname)
 		for line in lines:
-			f.write(line+"\n")
+			try:
+				f.write(line+"\n")
+			except:
+				print "Io error on out/"+sp_name+"."+pname+".cmd"
+				exit(5)
 		f.close()		
 
 
@@ -137,11 +146,19 @@ for switch_name in np['switches'].keys():
 				if m:
 					subbed = "'" + map[1].replace('*',interface)+"'"
 					line = np_macaddr(switch_name)+" "+subbed+" --> "+interface+"\n"
-					lldp_file.write(line)
+					try:
+						lldp_file.write(line)
+					except:
+						print "LLDP file write error."
+						exit(6)
 					break
 		lines = spc.apply_to_interface_list(interfaces,plines)
 		for line in lines:
-			cmd_file.write(line+"\n")
+			try:
+				cmd_file.write(line+"\n")
+			except:
+				print "cmd file write error."
+				exit(7)
 
 
 	cmd_file.close()
