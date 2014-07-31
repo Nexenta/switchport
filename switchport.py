@@ -102,7 +102,7 @@ for sp_name in np['protocols'].keys():
 
 
 
-switchports_file = open ("out/lldp",'w')
+lldp_file = open ("out/lldp",'w')
 for switch_name in np['switches'].keys():
 	sp_name = np_protocol(switch_name)
 	spc = sw_protocol(sp_name)
@@ -131,7 +131,7 @@ for switch_name in np['switches'].keys():
 				if m:
 					subbed = "'" + map[1].replace('*',interface)+"'"
 					line = np_macaddr(switch_name)+" "+subbed+" --> "+interface+"\n"
-					switchports_file.write(line)
+					lldp_file.write(line)
 					break
 		lines = spc.apply_to_interface_list(interfaces,plines)
 		for line in lines:
@@ -140,7 +140,7 @@ for switch_name in np['switches'].keys():
 
 	cmd_file.close()
 
-switchports_file.close()	
+lldp_file.close()	
 exit(0)
 
 
