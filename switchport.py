@@ -119,6 +119,12 @@ for switch_name in np['switches'].keys():
 	spc = sw_protocol(sp_name)
 	profiles = np_profile(switch_name)
 	protocol_name = np_protocol(switch_name)
+	if np['single-vlan-mode'] == 'access':
+		for p in profiles.keys():
+			if len(np['profiles'].get(p)) > 1:
+				print "Access mode only supports single-vlan profiles. "+p+" has more."
+				exit(3)
+					
 	for pname in profiles.keys():
 		plines = spc.profile_lines(np,pname)
 		interfaces = np_switchports(switch_name,pname).split(',')
