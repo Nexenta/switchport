@@ -4,6 +4,8 @@
 
 class unknown_switch:
 	#
+	# This method must generate all commands which are interface independent
+	# (which would be the first commands executed) for this switch protocol
 	#
 	def fixed_lines (self,sw_proto,np):
 		lines = []
@@ -11,11 +13,19 @@ class unknown_switch:
 		return lines
 		
 	#
-	# return lines for the specified sp_name and profile_name
+	# return lines for the specified profile_name, identifying the interfaces
+	# is handled outside of this routine.
+	#
+	# A checklist of issues to be addressed:
+	#	Set up PFC/no-drop for replicast (if not handled by fixed_lines)
+	#	Set up MTU 9000 (if not handled by fixed_lines)
+	#	Enable the set of vlans for the port
+	#	set up weighted round-robin over those vlans
+	#	enable lldp (if not handled by fixed_lines)
+	#	optionally supporess spanning tree for this port (its an edge port)
 	#
 	def profile_lines (self,np,pname):
 		lines = []
-		lines.append("need to do something with "+pname+" for "+sp_name)
 		#
 		# for each vlan
 		#		...
