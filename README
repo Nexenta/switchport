@@ -18,6 +18,8 @@
 #	inventec_icos.py	python file that generates commands for Inventec ICOS switches
 #	unknonw_switch.py	python file that services as a catchall class when a switch
 #						defined in the network plan is not known.
+#	netplan-example.json	Example network plan json file
+#	out						Sub-directory where output is generated
 #
 # Other switches can be added. Just be sure to add them to the factory function in
 # switchport.py that imports the full set and invokes the correct constructor when
