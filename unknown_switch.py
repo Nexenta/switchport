@@ -1,6 +1,11 @@
 #!/usr/bin/bash
 #
 # Dummy netplan module that is catchall for unknown switches
+#
+# If implementing your own switch module, none of your methods should produce any
+# effects other than returning a list of lines.
+#
+
 
 class unknown_switch:
 	#
@@ -26,10 +31,6 @@ class unknown_switch:
 	#
 	def profile_lines (self,np,pname):
 		lines = []
-		#
-		# for each vlan
-		#		...
-		#
 		return lines
 		
 	#
