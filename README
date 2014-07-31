@@ -1,0 +1,83 @@
+# This directory contains
+#
+# switchport.py		python file which reads a "network plan" (in json format) to produce
+#					command files to configure Ethernet Switchports properly to carry
+#					the Replicast(TM) protocol used by the NexentaEdge product for
+#					internal storge traffic.
+#
+#					This is designed to be incremental configuration done after
+#					base configuration of the swsitches is complete. The base
+#					configuration should deal with issues such as creation of trunking,
+#					setting up administrative interfaces and IP addresses,
+#					configuration of non-Replicast ports and creation of any 
+#					non-replicast VLANs required.
+#					
+#					Usage is covered later in this README document.
+#	aristra_eos.py	python file that generates commands for Arista EOS switches
+#	cisco_nxos.py	python file that generates commands for Cisco NXOS switche
+#	inventec_icos.py	python file that generates commands for Inventec ICOS switches
+#	unknonw_switch.py	python file that services as a catchall class when a switch
+#						defined in the network plan is not known.
+#
+# Other switches can be added. Just be sure to add them to the factory function in
+# switchport.py that imports the full set and invokes the correct constructor when
+# parsing the network plan json file.
+#
+# And yes, this should be changed to dynamically load any named script file.
+# Since you asked, when can we expect your patch?
+#
+# Usage
+#		switchport.py <name-of-network-plan-json-file>
+#
+# This will generate the following output files:
+#
+#		out/lldp	An enumeration (one per line) of possible replicast enabled
+#					switchports which hosts can recognize using lldp.
+#
+#						TBD: instructions on how this should be distributed.
+#						TBD: specify syntax for benefit of do-it-yourselfers
+#		out/<switch-name>.cmd	Text file of commands for <switch-name> to configure
+#								this switch. This command must be submitted to the
+#								switch with appropriate credentials.
+#		out/<switch-protocol-name>.<profile>.cmd
+#						Text file for commands that could be applied, with appropriate
+#						credentials, to configure a Switch using <switch-protocol-name>
+#						to apply the specified switchport profile.
+#
+#						Using these commands requires a user-generated wrapper to
+#						specify the port to be dynamically configured and supplying
+#						credentials if required.
+#
+#						Most switch CLI syntax was inspired Cisco, so for most this
+#						will require pre-panding lines like "interface ethernet <x>"
+#						where <x> is the switchport or a switchpoir list.
+#
+# The network-plan json file must define a single json object with the following structure
+#
+#		"single-vlan-mode" -- either "access" or "trunk". If 'access' the 'profiles'
+#						   -- section should define only profiles with a single vlan
+#		"switches"	-- an array of switch names, each with
+#			"protocol"	-- the protocol this switch supports, must be in the protocols list
+#			"macaddr"	-- The Mac Address that will identify this switch using lldp
+
+#		"protocols" -- an array of support switch protocols
+#			"lldp-map" 	-- List of two element arrays that provide the rules for
+#						-- mapping a switchport interface name to recognizable text
+#					 	-- that can be obtained using lldp
+#		"profiles"	-- an array of one or more named profiles for switchports.
+#					-- <profile_name>:{<list of vlan names>}
+#		"vlans" -- an array of <vlan-name>:{<vlan-parms>}. The <vlan-parms> are:
+#			"no-drop": "true" or "false
+#				Is this the VLAN that carries the replicast traffic? On any switchport
+#				that carries Replicast traffic this must be the only PFC protected
+#				VLAN.
+#			"vlan": <id>
+#				The numeric vlan id.
+#			"cos":<cos>
+#				The Ethernet Class of Service (0..7) for this VLAN. The cos assigned
+#				for the Replicast vlan should be exclusive to it on all the switchports
+#				describe in the network plan.
+#			"weight":<weight>
+#				The weight this vlan should recieve in the weighted round-robing
+#				distribution across the vlans in a profile
+#			
