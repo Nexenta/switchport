@@ -60,7 +60,7 @@ class cisco_nxos:
 	#
 	# return lines for the specified sp_name and profile_name
 	#
-	def profile_lines (self,np,sp_name,pname):
+	def profile_lines (self,np,pname):
 		lines = []
 		profile=np['profiles'].get(pname)
 		n_vlans = len(profile)

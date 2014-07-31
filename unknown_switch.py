@@ -13,7 +13,7 @@ class unknown_switch:
 	#
 	# return lines for the specified sp_name and profile_name
 	#
-	def profile_lines (self,np,sp_name,pname):
+	def profile_lines (self,np,pname):
 		lines = []
 		lines.append("need to do something with "+pname+" for "+sp_name)
 		#
