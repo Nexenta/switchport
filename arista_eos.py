@@ -9,7 +9,6 @@ class arista_eos:
 	#
 	def fixed_lines (self,sw_proto,np):
 		lines = []
-		lines.append("sw_proto "+str(sw_proto))
 		return lines
 		
 	#

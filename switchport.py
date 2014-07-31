@@ -95,7 +95,7 @@ for sp_name in np['protocols'].keys():
 	spc = sw_protocol(sp_name)
 	for pname in np['profiles'].keys():
 		f = open ("out/"+sp_name+"."+pname+".cmd","w")
-		lines = spc.profile_lines(np,sp_name,pname)
+		lines = spc.profile_lines(np,pname)
 		for line in lines:
 			f.write(line+"\n")
 		f.close()		
