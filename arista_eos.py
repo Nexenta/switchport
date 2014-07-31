@@ -49,7 +49,7 @@ class arista_eos:
 
 		remaining_weight = 100
 		for i in range(len(cos)):
-			lines.append('tx queue '+cos[i])
+			lines.append('tx-queue '+cos[i])
 			if i==0:
 				lines.append('no priority')
 			if i < len(cos)-1:
