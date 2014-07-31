@@ -85,6 +85,25 @@ if len(sys.argv) != 2:
 netplan_js = open(sys.argv[1],'r').read()
 np = json.loads(netplan_js)
 
+# TODO: we should validate the following references
+#	switches exists
+#		for each switch named
+#			protocol sub-field exists, and np['protocols'].get(protcol_name) exists
+#			macaddr exists (perhaps check syntax)
+#			profiles exists
+#				each entry refernces a valid profile in np['profiles']
+#	protocols exists
+#		lldp-map exists
+# 	profiles exists
+#		one or more profiles are defined
+#		refernced vlans exist in np['vlans']
+#	vlans exists
+#		for each the following sub-fields exists
+#			no-drop
+#			vlan
+#			cos
+#			weight
+
 try:
 	os.mkdir("out")
 except:
