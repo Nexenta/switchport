@@ -19,6 +19,7 @@
 #	unknonw_switch.py	python file that services as a catchall class when a switch
 #						defined in the network plan is not known.
 #	netplan-example.json	Example network plan json file
+#	netplan-access-example.json	Another example network plan with access mode switchports.
 #	out						Sub-directory where output is generated
 #
 # Other switches can be added. Just be sure to add them to the factory function in
