@@ -21,6 +21,7 @@ class arista_eos:
 		
 		total_weight = 0
 		no_drop_cos = 4
+		pfc_protected_found = False
 		vname = []
 		id = []
 		cos = []
@@ -35,6 +36,7 @@ class arista_eos:
 			weight.append(str(w))
 			if v['no-drop'] == 'true':
 				no_drop_cos = cos[0]
+				pfc_protected_found = True
 
 		lines.append('mtu 9000')	
 		if n_vlans > 1:
@@ -59,10 +61,15 @@ class arista_eos:
 				percent = remaining_weight
 			
 			lines.append('bandwidth percent '+str(percent))
-								
-		lines.append('priority-flow-control mode on')
-		lines.append('priority-flow-control priority '+no_drop_cos+' no-drop')
-		# set up spanning tree edge	
+		
+		if pfc_protected_found:						
+			lines.append('priority-flow-control mode on')
+			lines.append('priority-flow-control priority '+no_drop_cos+' no-drop')
+		#
+		# set up spanning tree edge: arista does not directly support this
+		# we need to evaluate whether bpdu filtering accomplishes the same
+		# thing with no side effects.
+		#
 				
 		return lines
 		
