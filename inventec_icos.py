@@ -34,7 +34,18 @@ class inventec_icos:
 		if n_vlans > 1:
 			lines.append('vlan participation include  '+','.join(id))
 			lines.append('vlan acceptframe vlanonly')
-			#set bandwidth percents
+			pc = []
+			pc_left = 100
+			len_w = len(weight)
+			for i in range(len_w-1):
+				pc_i = int(weight[i]*100/total_weight)
+				pc_left = pc_left - pc_i
+				pc.append(str(pc_i))
+			pc.append(pc_left)
+			#
+			#set bandwidth percents (pc[] is percent per traffic-class
+			#which is close, but not exactly whatis needed. Research still in progress
+			#
 		elif np['single-vlan-mode'] == 'access':
 			lines.append('vlan participation include '+id[0])
 			lines.append('vlan pvid '+id[0])
