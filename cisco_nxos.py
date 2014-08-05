@@ -1,6 +1,13 @@
 #!/usr/bin/bash
 #
 # neetplan module for Cisco-NXOS protocol
+#
+# TODO: we need to create service-policies for each possible switchport type
+# and then apply that policy to that switchport during profile_lines()
+# 
+# Current code just sets up a single policy and applies it to all replicast
+# enabled switchports
+#
 
 class cisco_nxos:
 	#
@@ -72,12 +79,15 @@ class cisco_nxos:
 		if n_vlans > 1:
 			lines.append('switchport mode trunk')
 			lines.append('switchport trunk allowed vlan '+','.join(id))
+			lines.append('spanning-tree port-type edge trunk')
 		elif np['single-vlan-mode'] == 'access':
 			lines.append('switchport mode access')
 			lines.append('switchport access vlan '+id[0])
+			lines.append('spanning-tree port-type edge')
 		else:
 			lines.append('switchport mode trunk')
 			lines.append('switchport trunk allowed vlan '+id[0])
+			lines.append('spanning-tree port-type edge trunk')
 				
 		return lines
 		
