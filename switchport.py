@@ -130,19 +130,27 @@ for sp_name in np['protocols'].keys():
 
 
 
-lldp_file = open ("out/lldp",'w')
+summary_file = open ("out/summary",'w')
 for switch_name in np['switches'].keys():
+	try:
+		line = "Switch "+switch_name+" Mac:"+np_macaddr(switch_name)+"\n"
+		summary_file.write(line)
+	except:
+		print "Summary file write error"
+		exit(6)
+		
 	sp_name = np_protocol(switch_name)
 	spc = sw_protocol(sp_name)
 	fixed_lines = spc.fixed_lines(spc,np)
 	
 	cmd_file = open ("out/"+switch_name+".cmd",'w')
 		
-	for line in fixed_lines:
-		err = cmd_file.write(line+"\n")
-		if err:
-			print "cmdfile write error",err
-			exit(2)
+	try:
+		for line in fixed_lines:
+			cmd_file.write(line+"\n")
+	except:
+		print "cmdfile write error"
+		exit(2)	
 		
 	spc = sw_protocol(sp_name)
 	profiles = np_profile(switch_name)
@@ -164,13 +172,14 @@ for switch_name in np['switches'].keys():
 				m=re.match(map[0],interface)
 				if m:
 					subbed = "'" + map[1].replace('*',interface)+"'"
-					line = np_macaddr(switch_name)+" "+subbed+" --> "+interface+"\n"
+					line = "Switchport "+subbed+" --> "+interface+"\n"
 					try:
-						lldp_file.write(line)
+						summary_file.write(line)
 					except:
-						print "LLDP file write error."
+						print "Summary file write error."
 						exit(6)
 					break
+			# "Vlan <name>:<id> cos:<cos> weight:<weight> [no-drop]
 		lines = spc.apply_to_interface_list(interfaces,plines)
 		for line in lines:
 			try:
@@ -182,7 +191,7 @@ for switch_name in np['switches'].keys():
 
 	cmd_file.close()
 
-lldp_file.close()	
+summary_file.close()	
 exit(0)
 
 
