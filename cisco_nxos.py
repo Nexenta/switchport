@@ -28,6 +28,8 @@ class cisco_nxos:
 		if replicast_cos == 1000:
 			print "Error: A no-drop vlan must be defined"
 			exit(4)
+		lines.append('configure')
+		lines.append('write erase')
 		lines.append('class-map type qos class-replicast')
 		lines.append('match cos '+str(replicast_cos))
 		lines.append('exit')
@@ -41,6 +43,14 @@ class cisco_nxos:
 		lines.append('exit')
 		lines.append('class-map type network-qos class-replicast')
 		lines.append('match qos-group 1')
+		lines.append('exit')
+		lines.append('policy-map type network-qos replicast-netpolicy')
+		lines.append('class type network-qos class-replicast')
+		lines.append('pause no-drop')
+		lines.append('mtu 9000')
+		lines.append('class type network-qos class-default')
+		lines.append('mtu 9000') 
+		lines.append('exit')
 		lines.append('exit')
 		for profile_name in np['profiles'].keys():
 			total_weight = 0
@@ -59,13 +69,12 @@ class cisco_nxos:
 			lines.append('class type queuing class-default')
 			lines.append('bandwidth percent '+str(def_percent))
 			lines.append('exit')
-			lines.append('policy-map type network-qos replicast-netpolicy')
-			lines.append('class class-replicast')
-			lines.append('pause no-drop')
-			lines.append('mtu 9000')
-			lines.append('class class-default')
-			lines.append('mtu 9000') 
-		
+			lines.append('exit')
+
+
+		lines.append('system qos')
+		lines.append('service-policy input replicast-in-policy')
+		lines.append('exit')		
 		return lines
 		
 	#
@@ -83,17 +92,17 @@ class cisco_nxos:
 		if n_vlans > 1:
 			lines.append('switchport mode trunk')
 			lines.append('switchport trunk allowed vlan '+','.join(id))
-			lines.append('spanning-tree port-type edge trunk')
+			#lines.append('spanning-tree port-type edge trunk')
 		elif np['single-vlan-mode'] == 'access':
 			lines.append('switchport mode access')
 			lines.append('switchport access vlan '+id[0])
-			lines.append('spanning-tree port-type edge')
+			#lines.append('spanning-tree port-type edge')
 		else:
 			lines.append('switchport mode trunk')
 			lines.append('switchport trunk allowed vlan '+id[0])
-			lines.append('spanning-tree port-type edge trunk')
+			#lines.append('spanning-tree port-type edge trunk')
 				
-		lines.append('service-policy input replicast-in-policy')
+
 		lines.append('service-policy type queuing input replicast-policy-'+pname)
 		lines.append('service-policy type queuing output replicast-policy-'+pname)
 		lines.append('service-policy type network-qos replicast-netpolicy')
