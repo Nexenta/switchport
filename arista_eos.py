@@ -9,6 +9,8 @@ class arista_eos:
 	#
 	def fixed_lines (self,sw_proto,np):
 		lines = []
+		lines.append('enable')
+		lines.append('configure')
 		return lines
 		
 	#
