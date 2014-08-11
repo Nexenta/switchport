@@ -29,7 +29,6 @@ class cisco_nxos:
 			print "Error: A no-drop vlan must be defined"
 			exit(4)
 		lines.append('configure')
-		lines.append('write erase')
 		lines.append('class-map type qos class-replicast')
 		lines.append('match cos '+str(replicast_cos))
 		lines.append('exit')
@@ -41,6 +40,10 @@ class cisco_nxos:
 		lines.append('class-map type queuing class-replicast')
 		lines.append('match qos-group 1')
 		lines.append('exit')
+		lines.append('system qos')
+		lines.append('no service-policy type network-qos replicast-netpolicy')
+		lines.append('exit')
+		lines.append('no policy-map type network-qos replicast-netpolicy')
 		lines.append('class-map type network-qos class-replicast')
 		lines.append('match qos-group 1')
 		lines.append('exit')
