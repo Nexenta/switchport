@@ -73,7 +73,7 @@ class cisco_nxos:
 
 
 		lines.append('system qos')
-		lines.append('service-policy input replicast-in-policy')
+		lines.append('service-policy type network-qos replicast-netpolicy')
 		lines.append('exit')		
 		return lines
 		
@@ -103,9 +103,12 @@ class cisco_nxos:
 			#lines.append('spanning-tree port-type edge trunk')
 				
 
+		lines.append('priority-flow-control mode on')
+		lines.append('service-policy input replicast-in-policy')
 		lines.append('service-policy type queuing input replicast-policy-'+pname)
 		lines.append('service-policy type queuing output replicast-policy-'+pname)
-		lines.append('service-policy type network-qos replicast-netpolicy')
+		lines.append('exit')
+
 		return lines
 		
 	#
