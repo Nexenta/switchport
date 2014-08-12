@@ -17,7 +17,9 @@ class cisco_nxos:
 	# First find the replicast % of the total bandwdith and its cos
 	# then it is mostly a static script with only a few variable fill-ins
 	#
-	def fixed_lines (self,sw_proto,np):
+	def fixed_lines (self,sw_name,sw_proto,np):
+		sw = np['switches'].get(sw_name)
+		qos_group = sw.get('qos-group','1')
 		lines = []
 		lines.append('feature lldp')
 		replicast_cos = 1000
@@ -35,18 +37,18 @@ class cisco_nxos:
 		lines.append('exit')
 		lines.append('policy-map type qos replicast-in-policy')
 		lines.append('class class-replicast')
-		lines.append('set qos-group 1')
+		lines.append('set qos-group '+qos_group)
 		lines.append('exit')
 		lines.append('exit')
 		lines.append('class-map type queuing class-replicast')
-		lines.append('match qos-group 1')
+		lines.append('match qos-group '+qos_group)
 		lines.append('exit')
 		lines.append('system qos')
 		lines.append('no service-policy type network-qos replicast-netpolicy')
 		lines.append('exit')
 		lines.append('no policy-map type network-qos replicast-netpolicy')
 		lines.append('class-map type network-qos class-replicast')
-		lines.append('match qos-group 1')
+		lines.append('match qos-group '+qos_group)
 		lines.append('exit')
 		lines.append('policy-map type network-qos replicast-netpolicy')
 		lines.append('class type network-qos class-replicast')
@@ -92,7 +94,7 @@ class cisco_nxos:
 	#
 	# return lines for the specified sp_name and profile_name
 	#
-	def profile_lines (self,np,pname):
+	def profile_lines (self,sw_name,np,pname):
 		lines = []
 		profile=np['profiles'].get(pname)
 		n_vlans = len(profile)

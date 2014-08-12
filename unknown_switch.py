@@ -12,7 +12,7 @@ class unknown_switch:
 	# This method must generate all commands which are interface independent
 	# (which would be the first commands executed) for this switch protocol
 	#
-	def fixed_lines (self,sw_proto,np):
+	def fixed_lines (self,switch_name,sw_proto,np):
 		lines = []
 		lines.append('Switch protocol not supported')
 		return lines
@@ -29,7 +29,7 @@ class unknown_switch:
 	#	enable lldp (if not handled by fixed_lines)
 	#	optionally supporess spanning tree for this port (its an edge port)
 	#
-	def profile_lines (self,np,pname):
+	def profile_lines (self,switch_name,np,pname):
 		lines = []
 		return lines
 		

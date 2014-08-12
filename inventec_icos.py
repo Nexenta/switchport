@@ -5,13 +5,13 @@
 class inventec_icos:
 	#
 	#
-	def fixed_lines (self,sw_proto,np):
+	def fixed_lines (self,switch_name,sw_proto,np):
 		return []
 		
 	#
 	# return lines for the specified sp_name and profile_name
 	#
-	def profile_lines (self,np,pname):
+	def profile_lines (self,switch_name,np,pname):
 		lines = []
 		profile=np['profiles'].get(pname)
 		n_vlans = len(profile)

@@ -7,7 +7,7 @@ class arista_eos:
 	#
 	# Arista-EOS requires no configuration lines independent of interface configuration
 	#
-	def fixed_lines (self,sw_proto,np):
+	def fixed_lines (self,switch_name,sw_proto,np):
 		lines = []
 		lines.append('enable')
 		lines.append('configure')
@@ -16,7 +16,7 @@ class arista_eos:
 	#
 	# return lines for the specified profile_name
 	#
-	def profile_lines (self,np,pname):
+	def profile_lines (self,switch_name,np,pname):
 		lines = []
 		profile=np['profiles'].get(pname)
 		n_vlans = len(profile)

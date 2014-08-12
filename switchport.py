@@ -119,7 +119,7 @@ for sp_name in np['protocols'].keys():
 	spc = sw_protocol(sp_name)
 	for pname in np['profiles'].keys():
 		f = open ("out/"+sp_name+"."+pname+".cmd","w")
-		lines = spc.profile_lines(np,pname)
+		lines = spc.profile_lines(' ',np,pname)
 		for line in lines:
 			try:
 				f.write(line+"\n")
@@ -141,7 +141,7 @@ for switch_name in np['switches'].keys():
 		
 	sp_name = np_protocol(switch_name)
 	spc = sw_protocol(sp_name)
-	fixed_lines = spc.fixed_lines(spc,np)
+	fixed_lines = spc.fixed_lines(switch_name,spc,np)
 	
 	cmd_file = open ("out/"+switch_name+".cmd",'w')
 		
@@ -162,7 +162,7 @@ for switch_name in np['switches'].keys():
 				exit(3)
 					
 	for pname in profiles.keys():
-		plines = spc.profile_lines(np,pname)
+		plines = spc.profile_lines(switch_name,np,pname)
 		interfaces = np_switchports(switch_name,pname).split(',')
 		for interface in interfaces:
 			prs = np['protocols']
