@@ -19,10 +19,11 @@ class cisco_nxos:
 	#
 	def fixed_lines (self,sw_proto,np):
 		lines = []
+		lines.append('feature lldp')
 		replicast_cos = 1000
 		for vlan_name in np['vlans'].keys():
 			v = np['vlans'].get(vlan_name)
-			if v['no-drop'] == 'true':
+			if v.get('no-drop','false') == 'true':
 				replicast_cos = v['cos']
 				break
 		if replicast_cos == 1000:
@@ -55,6 +56,15 @@ class cisco_nxos:
 		lines.append('mtu 9000') 
 		lines.append('exit')
 		lines.append('exit')
+		for vlan_name in np['vlans'].keys():
+			v = np['vlans'].get(vlan_name)
+			id = str(v['vlan'])
+			if id != '1':
+				lines.append('vlan '+id)
+				lines.append('name '+vlan_name)
+				lines.append('status active')
+				lines.append('no shutdown')
+				lines.append('exit')
 		for profile_name in np['profiles'].keys():
 			total_weight = 0
 			rep_weight = 0
@@ -62,7 +72,7 @@ class cisco_nxos:
 			for vlan_name in np['profiles'].get(profile_name):
 				v = np['vlans'].get(vlan_name)
 				total_weight = total_weight + v['weight']
-				if v['no-drop'] == 'true':
+				if v.get('no-drop','false') == 'true':
 					rep_weight = v['weight']
 			rep_percent = int(rep_weight*100/total_weight)
 			def_percent = 100 - rep_percent
@@ -73,7 +83,6 @@ class cisco_nxos:
 			lines.append('bandwidth percent '+str(def_percent))
 			lines.append('exit')
 			lines.append('exit')
-
 
 		lines.append('system qos')
 		lines.append('service-policy type network-qos replicast-netpolicy')
@@ -105,9 +114,9 @@ class cisco_nxos:
 			lines.append('switchport trunk allowed vlan '+id[0])
 			#lines.append('spanning-tree port-type edge trunk')
 				
-
+		lines.append('lldp transmit')
+		lines.append('lldp receive')
 		lines.append('priority-flow-control mode on')
-		lines.append('service-policy input replicast-in-policy')
 		lines.append('service-policy type queuing input replicast-policy-'+pname)
 		lines.append('service-policy type queuing output replicast-policy-'+pname)
 		lines.append('exit')
