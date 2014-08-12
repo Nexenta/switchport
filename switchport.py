@@ -185,7 +185,7 @@ for switch_name in np['switches'].keys():
 				summary_file.write("Vlan "+vlan_name+":"+str(v['vlan']))
 				summary_file.write(" cos:"+str(v['cos']))
 				summary_file.write(" weight:"+str(v['weight']))
-				if v['no-drop'] == 'true':
+				if v.get('no-drop','false') == 'true':
 					summary_file.write(' no-drop')
 				summary_file.write('\n')
 		lines = spc.apply_to_interface_list(interfaces,plines)

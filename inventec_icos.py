@@ -25,7 +25,7 @@ class inventec_icos:
 			v = np['vlans'].get(vlan_name)
 			weight.append(v['weight'])
 			total_weight = total_weight + v['weight']
-			if v['no-drop'] == 'true':
+			if v.get('no-drop','false') == 'true':
 				no_drop_cos=v['cos']
 			
 		if no_drop_cos == 9:

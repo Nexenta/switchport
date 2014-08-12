@@ -36,7 +36,7 @@ class arista_eos:
 			w = v['weight']
 			total_weight = total_weight + w
 			weight.append(str(w))
-			if v['no-drop'] == 'true':
+			if v.get('no-drop','false') == 'true':
 				no_drop_cos = cos[0]
 				pfc_protected_found = True
 

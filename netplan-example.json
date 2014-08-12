@@ -61,13 +61,11 @@
     		"weight":50
     	},
     	"client":{
-    	    "no-drop":"false",
     		"vlan":1,
     		"cos":5,
     		"weight":40
     	},    	
     	"management":{
-    	    "no-drop":"false",
     		"vlan":2,
     		"cos":6,
     		"weight":10
