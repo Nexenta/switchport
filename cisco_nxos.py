@@ -21,6 +21,7 @@ class cisco_nxos:
 		sw = np['switches'].get(sw_name)
 		qos_group = sw.get('qos-group','1')
 		lines = []
+		lines.append('configure')
 		lines.append('feature lldp')
 		replicast_cos = 1000
 		for vlan_name in np['vlans'].keys():
@@ -31,7 +32,7 @@ class cisco_nxos:
 		if replicast_cos == 1000:
 			print "Error: A no-drop vlan must be defined"
 			exit(4)
-		lines.append('configure')
+
 		lines.append('class-map type qos class-replicast')
 		lines.append('match cos '+str(replicast_cos))
 		lines.append('exit')
@@ -62,9 +63,10 @@ class cisco_nxos:
 			v = np['vlans'].get(vlan_name)
 			id = str(v['vlan'])
 			if id != '1':
+				lines.append('no vlan '+id)
 				lines.append('vlan '+id)
 				lines.append('name '+vlan_name)
-				lines.append('status active')
+				lines.append('state active')
 				lines.append('no shutdown')
 				lines.append('exit')
 		for profile_name in np['profiles'].keys():
