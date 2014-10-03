@@ -60,8 +60,40 @@ def np_vlan_cos (vlan):
 def np_vlan_weight (vlan):
 	return np['vlans'].get(vlan)['weight']		
 
+# fun parseInterfaces (switch_ports)
+#          input param var switch_ports String
+#          return var rep_ports List
+# Cisco: example switch_port = "1/1,1/2,1/3-1/6,1/7,1/10"
+#                return rep_ports =['1/1','1/2','1/3','1/4','1/5','1/6','1/7','1/10']
+#
+# Arista: example switch_port = "1,2,3-6,7,10"
+#                return rep_ports =['1','2','3','4','5','6','7','10']
 
+def parseInterfaces( switch_ports ):
+    rep_ports = []
+    switch_ports = switch_ports.split(',')
 
+    for ports in switch_ports:
+
+        if "-" in ports:
+            ports=ports.split('-')
+
+            if ports[0].find('/') >= 0:
+                i =  int(ports[0][ports[0].find('/')+1:])
+
+                while i != int(ports[1][ports[1].find('/')+1:])+1:
+                    rep_ports.append(str(ports[0][:ports[0].find('/')]) + '/' + str(i))
+                    i += 1
+            else:
+                i =  int(ports[0])
+
+                while i != int(ports[1])+1:
+                    rep_ports.append(str(i))
+                    i += 1
+        else:
+            rep_ports.append(ports)
+
+    return rep_ports
 
 #
 # process a single switch in the network plan
@@ -163,7 +195,7 @@ for switch_name in np['switches'].keys():
 					
 	for pname in profiles.keys():
 		plines = spc.profile_lines(switch_name,np,pname)
-		interfaces = np_switchports(switch_name,pname).split(',')
+		interfaces = parseInterfaces(np_switchports(switch_name,pname))
 		for interface in interfaces:
 			prs = np['protocols']
 			protocol = prs.get(protocol_name)
